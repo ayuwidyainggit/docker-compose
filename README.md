@@ -1,74 +1,66 @@
- # Docker Compose 
+ # Docker - Orkestrasi menggunakan Docker Compose
+
+ ### 1. MENENTUKAN KONTAINER PERTAMA
+Dasar dari docker compose adalah terletak pada file docker-compose.yml . 
+Dalam skenari ini memiliki aplikasi Node.js yang memerlukan koneksi redis. Untuk memulai, kita harus mendefinisikan file docker-compose.yml 
+terlebih dahulu. Format file ini didasarkan pada YAML (Yet Another Markup Language).
+berikut adalah format file docker-compose.yml :
+   ![1](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/1.PNG)
+   
+yaml tersebut akan menentukan container yang disebut web.
+
+ ### 2. MENENTUKAN PENGATURAN 
+Docker Compose mendukung semua properti yang dapat didefinisikan menggunakan docker run.
+Untuk menghubungkan dua container bersama untuk menentukan link properti  dan mendaftar koneksi yang diperlukan menggunakan source code seperti di bawah ini :
+
+   ![2](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/2.PNG)
+	 
+ ### 3. MENDEFINISIKAN KONTAINER KE DUA 
+Pada langkah sebelumnya adalah menggunakan Dockerfile di direktori yang saat ini sebagai basis untuk containernya. 
+Untuk mendefinisikan kontainer ke dua caranya adalah dengan menggunakan image yang ada dari Docker Hub sebagai container kedua.
+Mendefinisikan container ke dua dengan nama redis dan menggunkan image redis. Format YAML nya adalah seperti di bawah ini :
+     ![3](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/3.PNG)
+ ### 4. DOCKER UP
+Setelah membuat file docker-compose.yml maka kita dapat menggunakan aplikasi yang kita punya dengan perintah single command of up.
+Jika ingin memunculkan satu kontainer saja maka menggunakan perintah dengan format <name>
+Perintah -d digunakan untuk menjalankan kontainer di background, sama seperti saat menggunakan docker run.
+Untuk run aplikasi menggunakan perintah docker compose up -d  pada cmd.
+     ![4](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/4.PNG)
+	  
+ ### 5. MANAGEMEN DOCKER 
+Docker compose tidak hanya mengelola satu container saja tetapi dapat mengelola semua kontainer hanya menggunakan satu perintah saja. 
+Perintahnya adalah docker-compose ps
+    Hasilnya :
+     ![5](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/5.PNG)
+Perintah untuk mengelola semua log
+ docker-compose logs 
+     ![6](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/6.PNG)
+
+Perintah lain untuk run banyak kontainer dengan docker 
+ docker-compose
+     ![7](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/7.PNG)
  
- aplikasi yang komponennya lebih dari satu.
- kalau service lebih dari satu maka harus disatukan dengan docker container
+ ### 6. SKALA DOCKER
+Selain dapat me run container aplikasi, docker compose juga dapat mengukur jumlah kontainer yang sedang dijalankan.
+Opsi skala digunakan untuk menentukan layanan dan kemudian jumlah instance yang inginkan. 
+Jika angkanya lebih besar dari instans yang sudah berjalan, maka akan meluncurkan container tambahan. 
+Namun jika jumlahnya kurang, maka itu akan menghentikan container yang tidak diminta.
+untuk mengetahui skala container web yang dijalankan maka menggunakan perintah :
+docker-compose scale web=3
+hasil:
+    ![8](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/8.PNG)
+dalam perintah ini karena kontainer hanya ada satu, dan perintah tersebut skalanya 3 maka akan membuat container tambahan yaitu tutorial_web_2 dan tutorial_web_3.
+
+jika inging menurunkan menggunakan perintah 
+docker-compose scale web=1
+    ![9](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/9.PNG)
+dalam perintah ini tutorial_web_2 dan tutorial_web_3 dihentikan karena jumlah yang diinginkan hanya 1.
+
+ ### 7. MENGHENTIKAN Docker
+Untuk menghentikan container menggunakan perintah 
+docker-compose stop
+hasil :
+    ![10](https://github.com/ayuwidyainggit/docker-ayu/blob/master/images/10.PNG)
+ container tutorial_web_1 dan tutorial_redis_1 dihentikan
  
- 1. Defining First Container
- web:
-  build: .
-
-  2. Defining Settings
-  Untuk menghubungkan dua kontainer bersama-sama untuk menentukan properti tautan dan mencantumkan koneksi yang diperlukan. 
-  Misalnya, yang berikut ini akan menautkan ke penampung sumber redis yang ditentukan dalam file yang sama dan menetapkan nama yang sama ke alias.
-   links:
-    - redis
-	
-	==> redis adalah inmemory database. karena saat menjalankan pertama kali dia mengambil dari memory sehingga prosesnya lebih cepet .
-	
-
-	Format yang sama digunakan untuk properti lain seperti port
-ports:
-    - "3000"
-    - "8000"
-
-## 3. Define Second Container
-   Tentukan kontainer kedua dengan nama redis yang menggunakan images redis denga format YAML, 
-           redis:
-           image: redis:alpine
-           volumes:
-           - /var/redis/data:/data
-	
-## Step 4 - Docker Up
-Dengan dibuatnya file docker-compose.yml, Anda dapat meluncurkan semua aplikasi dengan satu perintah ke atas. Jika Anda ingin memunculkan satu kontainer, maka Anda dapat menggunakan <nama>.
-   web:
-     build: .
-
-     links:
-       - redis
-
-     ports:
-       - "3000"
-       - "8000"
-
-   redis:
-     image: redis:alpine
-     volumes:
-     - /var/redis/data:/data
-
-
-Argumen -d menyatakan untuk menjalankan kontainer di BACKGROUND, mirip dengan ketika digunakan dengan menjalankan docker run.
-
- jalankan aplikasi dengan docker-compose up -d
- 
-# 5. Docker Management
- gunakan perintah:
-	docker-compose ps
-	
-Untuk mengakses semua log melalui single stream yang Anda gunakan
-	docker-compose logs
-	docker-compose
-	
-	
-# 6. Docker Scale
-Opsi skala digunakan untuk menentukan layanan dan kemudian jumlah instance yang diinginkan. 
-Jika angkanya lebih besar dari instance yang sudah berjalan, maka akan meluncurkan kontainer tambahan. 
-Jika jumlahnya kurang, maka akan menghentikan kontainer yang tidak diinginkan.
-perintah:
-     docker-compose --scale web=3
-
-# 7. Docker Stop
-untuk menghentikan satu set kontainer Anda dapat menggunakan perintah
-     docker-compose stop
-
-Untuk menghapus semua kontainer, gunakan perintah
-     docker-compose rm
+untuk menghapus semua kontainer menggunakan	docker-compose rm
